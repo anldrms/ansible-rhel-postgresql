@@ -1,0 +1,84 @@
+---
+- hosts: localhost
+  become: yes
+  become_method: sudo
+
+  vars_files:
+    - vars.yml
+
+  pre_tasks:
+    - name: "Paket kurulumu"
+      dnf: "name={{ item }} state=present"
+      with_items:
+        - postgresql
+        - postgresql-server
+
+    - name: "Python paketleri kurulumu"
+      pip: "name={{ item }}  state=present"
+      with_items:
+        - psycopg2-binary
+
+  tasks:
+    - name: "PostgreSQL kontrol"
+      ansible.builtin.stat:
+        path: "/var/lib/pgsql/data/pg_hba.conf"
+      register: postgres_data
+
+    - name: "Kurulum PostgreSQL"
+      shell: "postgresql-setup initdb"
+      when: not postgres_data.stat.exists
+ 
+    - name: "Servisi baslatma"
+      service: "name={{ item }} state=started enabled=yes"
+      with_items:
+        - postgresql
+
+    - name: "Ornek db olusturmua"
+      postgresql_db:
+        state: present
+        name: "{{ db_name }}"
+      become: yes
+      become_user: postgres
+
+    - name: "db kullanici olusturma"
+      postgresql_user:
+        state: present
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+      become: yes
+      become_user: postgres
+
+    - name: "kullanicinin dbye izinleri"
+      postgresql_privs:
+        type: database
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: no
+        privs: all
+      become: yes
+      become_user: postgres
+
+    - name: "md5 baglanti yetkisi"
+      postgresql_pg_hba:
+        dest: "~/data/pg_hba.conf"
+        contype: host
+        databases: all
+        method: md5
+        users: "{{ db_user }}"
+        create: true
+      become: yes
+      become_user: postgres
+      notify: restart postgres
+ 
+      #    - name: "SQL scriptinin yuklenilmesi"
+      #set_fact:
+      # migration_sql: "{{ lookup('file', 'conf/migration.sql') }}"
+
+      #- name: "sql migration calistirma"
+      #command: "psql {{ db_name }} -c {{ migration_sql }}"
+      #become_user: postgres
+      # register: sql_response_variable
+      #ignore_errors: yes
+  handlers:
+    - name: restart postgres
+      service: name=postgresql state=restarted
