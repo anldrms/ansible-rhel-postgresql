@@ -69,16 +69,7 @@
       become: yes
       become_user: postgres
       notify: restart postgres
- 
-      #    - name: "SQL scriptinin yuklenilmesi"
-      #set_fact:
-      # migration_sql: "{{ lookup('file', 'conf/migration.sql') }}"
 
-      #- name: "sql migration calistirma"
-      #command: "psql {{ db_name }} -c {{ migration_sql }}"
-      #become_user: postgres
-      # register: sql_response_variable
-      #ignore_errors: yes
   handlers:
     - name: restart postgres
       service: name=postgresql state=restarted
