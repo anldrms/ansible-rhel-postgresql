@@ -1,0 +1,92 @@
+---
+- hosts: servers
+  become: yes
+  tasks:
+    
+    - name: Grab pvs
+      shell: lsscsi |grep "VBOX HARDDISK"|grep -v "0:0:0"|awk '{print $7}'
+      register: scsi_info
+    
+    
+    - name: Partition olusturma 
+      parted:
+        device: "{{ item }}"
+        label: gpt
+        number: 1
+        state: present
+      with_items: "{{scsi_info.stdout_lines}}"
+      register: pvs_info
+
+
+    - name: Volume group yaratma
+      lvg:
+        vg: vg_objectstorage
+        pvs: /dev/sdb1
+        state: present
+     
+    - name: Logic olusturma
+      lvol:
+        vg: vg_objectstorage
+        lv: " {{ item.name }}"
+        size: "{{ item.size }}" 
+      with_items:
+        - name: deneme1_lv
+          size: 600
+        - name: deneme2_lv
+          size: 600
+        - name: deneme3_lv
+          size: 600
+        - name: deneme4_lv
+          size: 600
+        - name: deneme5_lv
+          size: 600
+        - name: deneme6_lv
+          size: 600
+        - name: deneme7_lv
+          size: 600
+        - name: deneme8_lv
+          size: 600
+
+      ignore_errors: True
+
+    - name:  xfs file system
+      filesystem:
+        fstype: xfs
+        dev: "/dev/mapper/vg_objectstorage-{{ item }}"
+      with_items:
+        - deneme1_lv
+        - deneme2_lv
+        - deneme3_lv
+        - deneme4_lv
+        - deneme5_lv
+        - deneme6_lv 
+        - deneme7_lv
+        - deneme8_lv
+      ignore_errors: True
+      
+    - name: Mount file system
+      mount:
+        fstype: xfs
+        path: "/mnt/disks/{{ item.dst_path }}"
+        src: "/dev/mapper/vg_objectstorage-{{ item.src_path }}"
+        opts: noatime
+        state: mounted
+      with_items:
+        - dst_path: data1 
+          src_path: deneme1_lv
+        - dst_path: data2
+          src_path: deneme2_lv
+        - dst_path: data3
+          src_path: deneme3_lv
+        - dst_path: data4
+          src_path: deneme4_lv
+        - dst_path: data5
+          src_path: deneme5_lv
+        - dst_path: data6
+          src_path: deneme6_lv
+        - dst_path: data7
+          src_path: deneme7_lv
+        - dst_path: data8
+          src_path: deneme8_lv
+      ignore_errors: True
+        

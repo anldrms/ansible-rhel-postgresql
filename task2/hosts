@@ -1,0 +1,10 @@
+[servers]
+centos1 ansible_host=192.168.233.133
+centos2 ansible_host=192.168.233.132
+centos3 ansible_host=192.168.233.129
+
+[servers:vars]
+ansible_python_interpreter=/usr/bin/python
+
+[master]
+core/centos ansible_hosts=192.168.233.134
