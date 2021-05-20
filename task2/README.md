@@ -56,6 +56,13 @@ mount /dev/sdb1 /disk2
 
 Diskiniz kullanıma hazır. Disklerimizi görmek için  `df -h`  komutunu kullanabilirsiniz.
 
+Ardıdan oluşturduğumuz ansible playbook ile 8 adet partition yaratıyoruz.
+
+    ansible-playbook -k playbooks/volume.yml
+
+Ardından Disklerimizi görmek için `df -h` komutunu kullanabilirsiniz.
+
+![diskler başarıyla oluştu](https://cloudflare-ipfs.com/ipfs/QmXoFgMdYqogL1ysJcA9XBEXB9coxpL3adde23yr8zV4aD)
 
 
 
