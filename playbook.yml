@@ -8,10 +8,11 @@
 
   pre_tasks:
     - name: "Paket kurulumu"
-      dnf: "name={{ item }} state=present"
+      yum: "name={{ item }} state=present"
       with_items:
         - postgresql
         - postgresql-server
+        - python-pip
 
     - name: "Python paketleri kurulumu"
       pip: "name={{ item }}  state=present"
