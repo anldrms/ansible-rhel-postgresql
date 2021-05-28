@@ -1,3 +1,6 @@
+
+# Bootcamp Case 3 :
+
 >    Ödev iki aşamadan oluşmaktadır. [link](https://data.ibb.gov.tr/dataset/saatlik-trafik-yogunluk-veri-seti) üzerinde bulunan seçmiş olduğunuz bir aylık veriyi download edip aşağıda belirtilen şekillerde yükleme yapmanız bekleniyor.
 > 
 > 1.  Aşama: Datayı, Task – 1 için seçmiş olduğunuz teknolojiye göre (ilgili python kütüphanelerini kullanarak)
@@ -14,3 +17,4 @@ Kurgulanan Ortam yapısı şu şekildedir.
  - centos 1 : 192.168.233.133/24
  - centos :2 : 192.168.233.132/24
  - centos 3:  192.168.233.129/24 
+
