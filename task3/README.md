@@ -17,4 +17,5 @@ Kurgulanan Ortam yapısı şu şekildedir.
  - centos 1 : 192.168.233.133/24
  - centos :2 : 192.168.233.132/24
  - centos 3:  192.168.233.129/24 
+ - -env : python : 3.9
 
